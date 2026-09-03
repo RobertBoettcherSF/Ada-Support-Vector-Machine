@@ -32,7 +32,6 @@ procedure Tests is
    Y_Xor : constant Label_Array (1 .. 4) := [-1.0, 1.0, -1.0, 1.0];
    
    L_Model : Linear_Model (Dim => 2);
-   D_Model : Dual_Model (Num_Support_Vectors => 4, Features_Dim => 2);
 
    Exception_Raised : Boolean;
 begin
@@ -137,6 +136,7 @@ begin
       declare
          --  Sending 3D vector to 2D model
          Result : constant Label_Type := Predict (L_Model, V1);
+         pragma Unreferenced (Result);
       begin
          null;
       end;
