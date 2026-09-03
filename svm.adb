@@ -114,6 +114,9 @@ package body SVM is
       Val    : Real;
       X_I    : Vector (1 .. Dim);
    begin
+      if N /= Y'Length then
+         raise Dimension_Mismatch with "X and Y must have the same number of samples.";
+      end if;
       if N = 0 or Dim = 0 then
          raise Invalid_Data with "Dataset cannot be empty.";
       end if;
@@ -192,6 +195,9 @@ package body SVM is
       Num_SVs      : Natural := 0;
       SV_Idx       : Positive := 1;
    begin
+      if N /= Y'Length then
+         raise Dimension_Mismatch with "X and Y must have the same number of samples.";
+      end if;
       if N < 2 then
          raise Invalid_Data with "SMO requires at least 2 samples.";
       end if;
