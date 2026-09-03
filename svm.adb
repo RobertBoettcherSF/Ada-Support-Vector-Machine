@@ -13,7 +13,7 @@ package body SVM is
    function Next_Random (Limit : Positive) return Positive is
    begin
       LCG_State := (LCG_State * 1103515245 + 12345);
-      return Positive (LCG_State mod Modular_32 (Limit)) + 1;
+      return Natural (LCG_State mod Modular_32 (Limit)) + 1;
    end Next_Random;
 
    -----------------------------
