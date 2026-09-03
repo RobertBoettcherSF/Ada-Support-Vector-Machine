@@ -4,8 +4,6 @@
 --    2. Linear Soft-Margin SVM
 --    3. Non-linear SVM via the Kernel Trick (Polynomial, RBF)
 
-with Ada.Exceptions;
-
 package SVM is
    pragma Preelaborate;
 
