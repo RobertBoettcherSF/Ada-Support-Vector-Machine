@@ -1,8 +1,10 @@
-with Ada.Numerics.Elementary_Functions;
+with Ada.Numerics.Generic_Elementary_Functions;
 
 package body SVM is
 
-   use Ada.Numerics.Elementary_Functions;
+   --  Instantiate elementary functions for our custom Real type to enable ** and Exp
+   package Real_Math is new Ada.Numerics.Generic_Elementary_Functions (Real);
+   use Real_Math;
 
    --  Simple LCG for deterministic pseudo-random index generation in SMO/Pegasos
    type Modular_32 is mod 2**32;
@@ -101,7 +103,7 @@ package body SVM is
       Dim    : constant Natural := X'Length (2);
       Lambda : constant Real := 1.0 / C;
       
-      W      : Vector (1 .. Dim) := (others => 0.0);
+      W      : Vector (1 .. Dim) := [others => 0.0];
       Bias   : Real := 0.0;
       
       I      : Positive;
@@ -171,7 +173,7 @@ package body SVM is
    is
       N            : constant Natural := X'Length (1);
       Dim          : constant Natural := X'Length (2);
-      Alphas       : Vector (1 .. N) := (others => 0.0);
+      Alphas       : Vector (1 .. N) := [others => 0.0];
       Bias         : Real := 0.0;
       Passes       : Natural := 0;
       Num_Changed  : Natural;
