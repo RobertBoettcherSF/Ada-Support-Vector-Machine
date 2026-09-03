@@ -1,5 +1,4 @@
 with Ada.Text_IO; use Ada.Text_IO;
-with System.Assertions;
 with SVM;         use SVM;
 
 procedure Tests is
@@ -92,7 +91,7 @@ begin
    Put_Line ("TEST 8 — Dual SMO SVM Train (Polynomial Kernel)");
    declare
       Poly_Model : constant Dual_Model := 
-        Train_Dual_SMO (X_Lin, Y_Lin, C => 1.0, Kernel => Polynomial_Kernel, Max_Passes => 5, Degree => 2.0);
+        Train_Dual_SMO (X_Lin, Y_Lin, C => 1.0, Kernel => Polynomial_Kernel, Max_Passes => 5, Degree => 2.0, Coef0 => 1.0);
    begin
       Check ("8.1 Extracted valid support vectors", Poly_Model.Num_Support_Vectors > 0);
       Check ("8.2 Predicted class +1 cleanly", Predict (Poly_Model, [2.0, 2.0]) = 1.0);
@@ -125,7 +124,7 @@ begin
          Dummy := Train_Linear (X_Lin, Bad_Y, 1.0, 10);
       end;
    exception
-      when System.Assertions.Assert_Failure => 
+      when Dimension_Mismatch => 
          Exception_Raised := True;
    end;
    Check ("11.1 Precondition failure properly triggered for mismatched rows", Exception_Raised);
@@ -141,10 +140,8 @@ begin
          null;
       end;
    exception
-      when System.Assertions.Assert_Failure =>
+      when Dimension_Mismatch =>
          Exception_Raised := True;
-      when others =>
-         null; -- Fallback if precondition is disabled and manual raise triggers
    end;
    Check ("12.1 Predict rejects improperly sized features", Exception_Raised);
 
@@ -159,7 +156,7 @@ begin
          Dummy := Train_Dual_SMO (Empty_X, Empty_Y, 1.0, Linear_Kernel, 10);
       end;
    exception
-      when System.Assertions.Assert_Failure =>
+      when Invalid_Data =>
          Exception_Raised := True;
    end;
    Check ("13.1 SMO Training rejects empty datasets", Exception_Raised);
