@@ -2,7 +2,7 @@ with Ada.Numerics.Generic_Elementary_Functions;
 
 package body SVM is
 
-   --  Instantiate elementary functions for our custom Real type to enable ** and Exp
+   --  Instantiate elementary functions for our custom Real type to enable Exp
    package Real_Math is new Ada.Numerics.Generic_Elementary_Functions (Real);
    use Real_Math;
 
@@ -13,7 +13,8 @@ package body SVM is
    function Next_Random (Limit : Positive) return Positive is
    begin
       LCG_State := (LCG_State * 1103515245 + 12345);
-      return Natural (LCG_State mod Modular_32 (Limit)) + 1;
+      --  Use higher bits for better pseudo-randomness (standard LCG fix)
+      return Natural ((LCG_State / 65536) mod Modular_32 (Limit)) + 1;
    end Next_Random;
 
    -----------------------------
@@ -83,7 +84,9 @@ package body SVM is
          when Linear_Kernel =>
             return Dot_Product (A, B);
          when Polynomial_Kernel =>
-            return (Gamma * Dot_Product (A, B) + Coef0) ** Degree;
+            --  Cast Degree to Integer to use built-in integer exponentiation.
+            --  Generic floating-point ** crashes on negative bases.
+            return (Gamma * Dot_Product (A, B) + Coef0) ** Integer (Degree);
          when RBF_Kernel =>
             return Exp (-Gamma * Euclidean_Distance_Squared (A, B));
       end case;
